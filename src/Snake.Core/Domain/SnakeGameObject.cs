@@ -6,8 +6,6 @@ namespace Snake.Core.Domain
     public class SnakeGameObject
     {
 
-        public Direction Direction { get; private set; } = Direction.RIGHT;
-
         private SnakeLifeState snakeLife = SnakeLifeState.LIVE;
         private LinkedList<PosXY> snakeBody = new();
 
@@ -35,32 +33,16 @@ namespace Snake.Core.Domain
             snakeLife = SnakeLifeState.DEAD;
         }
 
-        public void ChangeDirection(Direction direction)
+        public bool CheckCollisionAtPosition(PosXY position)
         {
-            if ((int)direction == -(int)this.Direction)
-            {
-                throw new WrongDirectionException();
-            }
-            Direction = direction;
-        }
-
-        public bool CollideWithObjectAtPos(PosXY pos)
-        {
-            var collided = snakeBody.SingleOrDefault(i => i.Equals(pos));
+            var collided = snakeBody.SingleOrDefault(i => i.Equals(position));
             return collided is { };
         }
-
         public void Move(PosXY toPos)
         {
             if (SnakeIsDead())
             {
                 throw new TryMoveWhenDeadException();
-            }
-
-            if (CollideWithObjectAtPos(toPos))
-            {
-                KillSnake();
-                return;
             }
 
             snakeBody.RemoveFirst();

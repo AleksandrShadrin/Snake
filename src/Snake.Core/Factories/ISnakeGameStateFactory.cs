@@ -4,6 +4,6 @@ namespace Snake.Core.Factories
 {
     public interface ISnakeGameStateFactory
     {
-        SnakeGameState CreateSnakeGameState(SnakeGameObject @object);
+        SnakeGameManager CreateSnakeGameManager(SnakeGameObject @object);
     }
 }
