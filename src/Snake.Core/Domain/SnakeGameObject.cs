@@ -51,7 +51,7 @@ namespace Snake.Core.Domain
 
         public void IncreaseSnake()
         {
-            snakeBody.AddFirst(snakeBody.First);
+            snakeBody.AddFirst(snakeBody.First.Value);
         }
 
         public PosXY GetHead()
@@ -71,9 +71,9 @@ namespace Snake.Core.Domain
         public PosXY GetTail()
         {
             var snakeTail = snakeBody.First.Value;
-            if (!GetBody().Contains(snakeTail) && snakeTail != GetHead())
+            if (GetHead() != snakeBody.First.Value)
             {
-                return snakeTail;
+                return snakeBody.First.Value;
             }
             return null;
         }
