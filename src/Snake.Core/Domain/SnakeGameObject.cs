@@ -71,7 +71,7 @@ namespace Snake.Core.Domain
         public PosXY GetTail()
         {
             var snakeTail = snakeBody.First.Value;
-            if (snakeTail != GetBody() && snakeTail != GetHead())
+            if (!GetBody().Contains(snakeTail) && snakeTail != GetHead())
             {
                 return snakeTail;
             }

@@ -7,9 +7,11 @@ namespace Snake.Core.Domain
     {
         public uint Score { get; private set; }
         public List<RewardObject> RewardObjects { get; private set; } = new();
+        public Direction MoveDirection { get; private set; } = Direction.RIGHT;
 
-        private Predicate<SnakeGameManager> Conditions;
+        private Predicate<SnakeGameManager> conditions;
         private SnakeGameObject _snake;
+
         public SnakeGameManager(SnakeGameObject snake)
         {
             if (snake is null)
@@ -19,25 +21,16 @@ namespace Snake.Core.Domain
             _snake = snake;
         }
 
-        public void MoveSnake(PosXY toPos)
+        public void ChangeDirection(Direction direction)
         {
-            var snakeCollidedWithItself = _snake.CheckCollisionAtPosition(toPos);
-
-            if (snakeCollidedWithItself)
+            if ((int)direction == -(int)MoveDirection)
             {
-                _snake.KillSnake();
-                return;
+                throw new WrongDirectionException();
             }
 
-            var collidedObjects = RewardObjects.
-                Where(i => _snake.CheckCollisionAtPosition(i.Position));
-
-            foreach (var item in collidedObjects)
-            {
-                RemoveRewardObject(item);
-                AddScore(item.Reward);
-            }
+            MoveDirection = direction;
         }
+
         public void RemoveRewardObject(RewardObject rewardObject)
             => RewardObjects.Remove(rewardObject);
 
@@ -55,13 +48,13 @@ namespace Snake.Core.Domain
 
         public SnakeGameManager AddGameOverConditions(Predicate<SnakeGameManager> condition)
         {
-            Conditions += condition;
+            conditions += condition;
             return this;
         }
 
         public bool GameIsOver()
         {
-            var result = Conditions?.Invoke(this);
+            var result = conditions?.Invoke(this);
             if (result is { })
             {
                 return _snake.SnakeIsDead() || result.Value;
@@ -72,6 +65,49 @@ namespace Snake.Core.Domain
         public void AddScore(uint points)
         {
             Score += points;
+        }
+
+        public void MoveSnake()
+        {
+            var head = _snake.GetHead();
+
+            var newPos = MoveDirection switch
+            {
+                Direction.TOP => head with { X = head.X, Y = head.Y + 1 },
+                Direction.BOTTOM => head with { X = head.X, Y = head.Y - 1 },
+                Direction.RIGHT => head with { X = head.X + 1, Y = head.Y },
+                Direction.LEFT => head with { X = head.X - 1, Y = head.Y },
+            };
+
+            MoveSnake(newPos);
+        }
+
+        private void MoveSnake(PosXY toPos)
+        {
+            var snakeCollidedWithItself = _snake.CheckCollisionAtPosition(toPos);
+
+            if (snakeCollidedWithItself)
+            {
+                _snake.KillSnake();
+                return;
+            }
+
+            CheckCollisionWithRewards();
+
+            _snake.Move(toPos);
+        }
+
+        private void CheckCollisionWithRewards()
+        {
+            var collidedObjects = RewardObjects.
+                            Where(i => _snake.CheckCollisionAtPosition(i.Position));
+
+            foreach (var item in collidedObjects)
+            {
+                RemoveRewardObject(item);
+                AddScore(item.Reward);
+                _snake.IncreaseSnake();
+            }
         }
     }
 }
