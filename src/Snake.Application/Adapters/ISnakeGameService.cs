@@ -1,4 +1,5 @@
 ﻿using Snake.Application.Models;
+using Snake.Core.Constants;
 using Snake.Core.ValueObjects;
 
 namespace Snake.Application.Adapters

@@ -1,4 +1,5 @@
-﻿using Snake.Core.Exceptions;
+﻿using Snake.Core.Constants;
+using Snake.Core.Exceptions;
 using Snake.Core.ValueObjects;
 
 namespace Snake.Core.Domain
@@ -6,11 +7,11 @@ namespace Snake.Core.Domain
     public class SnakeGameManager
     {
         public uint Score { get; private set; }
-        public List<RewardObject> RewardObjects { get; private set; } = new();
         public Direction MoveDirection { get; private set; } = Direction.RIGHT;
 
         private Predicate<SnakeGameManager> conditions;
         private SnakeGameObject _snake;
+        private List<RewardObject> RewardObjects = new();
 
         public SnakeGameManager(SnakeGameObject snake)
         {
@@ -31,6 +32,8 @@ namespace Snake.Core.Domain
             MoveDirection = direction;
         }
 
+        public IReadOnlyList<RewardObject> GetRewardObjects()
+            => RewardObjects;
         public void RemoveRewardObject(RewardObject rewardObject)
             => RewardObjects.Remove(rewardObject);
 

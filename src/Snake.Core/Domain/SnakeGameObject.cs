@@ -1,4 +1,5 @@
-﻿using Snake.Core.Exceptions;
+﻿using Snake.Core.Constants;
+using Snake.Core.Exceptions;
 using Snake.Core.ValueObjects;
 
 namespace Snake.Core.Domain

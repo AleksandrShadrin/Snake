@@ -1,4 +1,4 @@
-﻿namespace Snake.Core.ValueObjects
+﻿namespace Snake.Core.Constants
 {
     public enum Direction
     {
