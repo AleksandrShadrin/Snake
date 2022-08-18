@@ -1,8 +1,9 @@
-﻿using Snake.Core.ValueObjects;
+﻿using Snake.Application.Models;
+using Snake.Core.ValueObjects;
 
 namespace Snake.Application.Adapters
 {
-    public interface IGameManagerService
+    public interface ISnakeGameService
     {
         bool GameIsOver();
         uint GetScore();
@@ -11,5 +12,6 @@ namespace Snake.Application.Adapters
         void RemoveRewardObject(RewardObject reward);
         void MoveSnake();
         void ChangeMoveDirection(Direction direction);
+        SnakeBodyObject GetSnakeBody();
     }
 }
