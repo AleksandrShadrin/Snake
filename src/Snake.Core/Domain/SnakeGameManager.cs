@@ -95,15 +95,16 @@ namespace Snake.Core.Domain
                 return;
             }
 
-            CheckCollisionWithRewards();
-
             _snake.Move(toPos);
+
+            CheckCollisionWithRewards();
         }
 
         private void CheckCollisionWithRewards()
         {
             var collidedObjects = RewardObjects.
-                            Where(i => _snake.CheckCollisionAtPosition(i.Position));
+                            Where(i => _snake.CheckCollisionAtPosition(i.Position))
+                            .ToList();
 
             foreach (var item in collidedObjects)
             {
