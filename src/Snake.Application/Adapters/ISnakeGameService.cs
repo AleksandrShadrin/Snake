@@ -6,13 +6,15 @@ namespace Snake.Application.Adapters
 {
     public interface ISnakeGameService
     {
+        void CreateGame(PosXY pos, Level level);
         bool GameIsOver();
         uint GetScore();
-        void AddScore(uint points);
         void AddRewardObject(RewardObject reward);
         void RemoveRewardObject(RewardObject reward);
         void MoveSnake();
         void ChangeMoveDirection(Direction direction);
+        IEnumerable<PosXY> GetWalls();
+        IReadOnlyList<RewardObject> GetRewards();
         SnakeBodyObject GetSnakeBody();
     }
 }
