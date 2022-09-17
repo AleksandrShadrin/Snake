@@ -8,18 +8,24 @@ namespace Snake.Core.Domain
     {
         public uint Score { get; private set; }
         public Direction MoveDirection { get; private set; } = Direction.RIGHT;
+        public Level Level { get; private set; }
 
         private Predicate<SnakeGameManager> conditions;
         private SnakeGameObject _snake;
         private List<RewardObject> RewardObjects = new();
 
-        public SnakeGameManager(SnakeGameObject snake)
+        public SnakeGameManager(SnakeGameObject snake, Level level)
         {
             if (snake is null)
             {
                 throw new SnakeIsEmptyException();
             }
+            if (level is null)
+            {
+                throw new ArgumentNullException(nameof(level));
+            }
             _snake = snake;
+            Level = level;
         }
 
         public void ChangeDirection(Direction direction)
@@ -45,6 +51,9 @@ namespace Snake.Core.Domain
             {
                 RemoveRewardObject(existedObject);
             }
+
+            if (Level.Walls.Contains(rewardObject.Position))
+                throw new RewardObjectCantBeInWallPosException();
 
             RewardObjects.Add(rewardObject);
         }
@@ -74,22 +83,28 @@ namespace Snake.Core.Domain
         {
             var head = _snake.GetHead();
 
-            var newPos = MoveDirection switch
-            {
-                Direction.TOP => head with { X = head.X, Y = head.Y + 1 },
-                Direction.BOTTOM => head with { X = head.X, Y = head.Y - 1 },
-                Direction.RIGHT => head with { X = head.X + 1, Y = head.Y },
-                Direction.LEFT => head with { X = head.X - 1, Y = head.Y },
-            };
+            PosXY newPos = GenerateNewPos(head);
 
             MoveSnake(newPos);
+        }
+
+        private PosXY GenerateNewPos(PosXY prevPos)
+        {
+            return MoveDirection switch
+            {
+                Direction.TOP => prevPos with { X = prevPos.X, Y = (prevPos.Y - 1) < 0 ? Level.GameSize.Y : prevPos.Y - 1 },
+                Direction.BOTTOM => prevPos with { X = prevPos.X, Y = (prevPos.Y + 1) >= Level.GameSize.Y ? 0 : prevPos.Y + 1 },
+                Direction.RIGHT => prevPos with { X = (prevPos.X + 1) >= Level.GameSize.X ? 0 : prevPos.X + 1, Y = prevPos.Y },
+                Direction.LEFT => prevPos with { X = (prevPos.X - 1) < 0 ? Level.GameSize.X : prevPos.X - 1, Y = prevPos.Y },
+            };
         }
 
         private void MoveSnake(PosXY toPos)
         {
             var snakeCollidedWithItself = _snake.CheckCollisionAtPosition(toPos);
+            var snakeCollideWithWalls = Level.Walls.Any(w => _snake.CheckCollisionAtPosition(w));
 
-            if (snakeCollidedWithItself)
+            if (snakeCollidedWithItself || snakeCollideWithWalls)
             {
                 _snake.KillSnake();
                 return;
