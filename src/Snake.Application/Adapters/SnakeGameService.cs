@@ -35,9 +35,19 @@ namespace Snake.Application.Adapters
             _snakeGameManager = _gameManagerFactory.CreateSnakeGameManager(_snakeGameObject, level);
         }
 
+        public Direction CurrentDirection()
+        {
+            return _snakeGameManager.MoveDirection;
+        }
+
         public bool GameIsOver()
         {
             return _snakeGameManager.GameIsOver();
+        }
+
+        public Level GetLevel()
+        {
+            return _snakeGameManager.Level;
         }
 
         public IReadOnlyList<RewardObject> GetRewards()
@@ -58,6 +68,28 @@ namespace Snake.Application.Adapters
         public IEnumerable<PosXY> GetWalls()
         {
             return _snakeGameManager.Level.Walls;
+        }
+
+        public void LoadGame(SnakeGameData data)
+        {
+            var allBody = new LinkedList<PosXY>();
+
+            allBody.AddFirst(data.Snake.Head);
+            data.Snake.Body.ToList().ForEach(i => allBody.AddFirst(i));
+
+            if (data.Snake.Tail is { })
+            {
+                allBody.AddFirst(data.Snake.Tail);
+            }
+
+            _snakeGameObject = new(allBody);
+            _snakeGameManager = _gameManagerFactory.CreateSnakeGameManager(_snakeGameObject, data.Level);
+            _snakeGameManager.ChangeDirection(data.Direction);
+
+            foreach (var reward in data.RewardObjects)
+            {
+                this.AddRewardObject(reward);
+            }
         }
 
         public void MoveSnake()
