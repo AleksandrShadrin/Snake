@@ -12,6 +12,8 @@ namespace Snake.Presentation
         private InputHandler _handler = new();
         private double gameSpeed = 4;
         private readonly IGameSnakeRenderService _renderService;
+        private Direction currentDirection = Direction.RIGHT;
+
         public GameEngine(ISnakeGameService snakeGameService, IGameSnakeRenderService renderService)
         {
             _snakeGameService = snakeGameService;
@@ -40,7 +42,7 @@ namespace Snake.Presentation
 
             Console.Clear();
 
-            _renderService.RenderSnakeBodyObject(snake);
+            _renderService.RenderSnakeBodyObject(snake, currentDirection);
             _renderService.RenderWalls(walls);
             _renderService.RenderRewardObjects(rewards);
         }
@@ -59,6 +61,7 @@ namespace Snake.Presentation
             try
             {
                 _snakeGameService.ChangeMoveDirection(direction);
+                currentDirection = direction;
             }
             catch (Exception ex)
             {
