@@ -8,14 +8,19 @@ namespace Snake.Core.Domain
     {
 
         private SnakeLifeState snakeLife = SnakeLifeState.LIVE;
-        private LinkedList<PosXY> snakeBody = new();
+        private LinkedList<PosXY> snakeBody;
 
+        public SnakeGameObject(LinkedList<PosXY> snakeBody)
+        {
+            this.snakeBody = snakeBody;
+        }
         public SnakeGameObject(PosXY position)
         {
             if (position is null)
             {
                 throw new TrySetNullPositionException();
             }
+            snakeBody = new();
             snakeBody.AddFirst(position);
         }
 
