@@ -89,6 +89,30 @@ namespace Snake.Core.Tests
             // Assert
             snake.GetHead().ShouldBe(new PosXY(0, 0));
         }
+
+        [Fact]
+        public void When_Add_Reward_Object_In_PosXY_Where_Wall_Already_Exist_Should_Throw_RewardObjectCantBeInWallPosException()
+        {
+            // Arrange
+            var snake = GetSnakeInDefaultPosition();
+            var gameManager = snakeGameManagerFactory
+                .CreateSnakeGameManager(snake,
+                    new Level(new PosXY(5, 10),
+                        new List<PosXY> { new PosXY(1, 1) }));
+            var rewardObject = new RewardObject
+                    (
+                        Position: new PosXY(1, 1),
+                        Reward: 4
+                    );
+
+            // Act
+            var exception = Record.Exception(() => gameManager
+                .AddRewardObject(rewardObject));
+
+            // Assert
+            exception.ShouldNotBeNull();
+            exception.ShouldBeOfType<RewardObjectCantBeInWallPosException>();
+        }
         #region ARRANGE
         private readonly ISnakeGameObjectFactory snakeGameObjectFactory
             = new SnakeGameObjectFactory();
