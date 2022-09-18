@@ -7,7 +7,7 @@ namespace Snake.Core.Domain
     public class SnakeGameManager
     {
         public uint Score { get; private set; }
-        public Direction MoveDirection { get; private set; } = Direction.RIGHT;
+        public Direction MoveDirection { get; private set; } = Direction.RIGHT; // Змейка начинает движение всегда вправо
         public Level Level { get; private set; }
 
         private Predicate<SnakeGameManager> conditions;
@@ -42,7 +42,8 @@ namespace Snake.Core.Domain
             => RewardObjects;
         public void RemoveRewardObject(RewardObject rewardObject)
             => RewardObjects.Remove(rewardObject);
-
+        // Добавляет объект награды, если в его позиции уже есть данный объект,
+        // то происходит замена на новый
         public void AddRewardObject(RewardObject rewardObject)
         {
             var existedObject = RewardObjects.SingleOrDefault(i => i.Position == rewardObject.Position);
@@ -57,7 +58,7 @@ namespace Snake.Core.Domain
 
             RewardObjects.Add(rewardObject);
         }
-
+        // Добавление условий окончания игры
         public SnakeGameManager AddGameOverConditions(Predicate<SnakeGameManager> condition)
         {
             conditions += condition;
@@ -78,7 +79,7 @@ namespace Snake.Core.Domain
         {
             Score += points;
         }
-
+        
         public void MoveSnake()
         {
             var head = _snake.GetHead();
@@ -103,8 +104,9 @@ namespace Snake.Core.Domain
         {
             var snakeCollidedWithItself = _snake.CheckCollisionAtPosition(toPos);
             var snakeCollideWithWalls = Level.Walls.Any(w => _snake.CheckCollisionAtPosition(w));
+            var inPosWall = Level.Walls.Any(w => w == toPos);
 
-            if (snakeCollidedWithItself || snakeCollideWithWalls)
+            if (snakeCollidedWithItself || snakeCollideWithWalls || inPosWall)
             {
                 _snake.KillSnake();
                 return;
