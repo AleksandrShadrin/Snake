@@ -1,6 +1,4 @@
-﻿using Snake.Application.Models;
-
-namespace Snake.Application.Adapters
+﻿namespace Snake.Application.Adapters
 {
     public interface IGameSaveLoader
     {
