@@ -1,7 +1,6 @@
 ﻿using Snake.Application.Models;
 using Snake.Core.Constants;
 using Snake.Core.ValueObjects;
-using System.Xml.Linq;
 
 namespace Snake.Presentation.Services
 {
