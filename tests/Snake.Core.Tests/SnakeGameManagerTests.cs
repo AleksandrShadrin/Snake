@@ -15,7 +15,6 @@ namespace Snake.Core.Tests
             var gameManager = GetGameManagerWithDeafaultParams();
 
             // Act
-            gameManager.ChangeDirection(Constants.Direction.RIGHT);
             var exception = Record.Exception(() => gameManager.ChangeDirection(Constants.Direction.LEFT));
 
             // Assert
@@ -112,6 +111,24 @@ namespace Snake.Core.Tests
             // Assert
             exception.ShouldNotBeNull();
             exception.ShouldBeOfType<RewardObjectCantBeInWallPosException>();
+        }
+
+        [Fact]
+        public void When_Change_Direction_More_Than_Once_Should_Throw_TryChangeSnakeDirectionMoreThenOncePerMoveException()
+        {
+            // Arrange
+            var gameManager = GetGameManagerWithDeafaultParams();
+
+            // Act
+            var exception = Record.Exception(() =>
+            {
+                gameManager.ChangeDirection(Constants.Direction.TOP);
+                gameManager.ChangeDirection(Constants.Direction.LEFT);
+            });
+
+            // Assert
+            exception.ShouldNotBeNull();
+            exception.ShouldBeOfType<TryChangeSnakeDirectionMoreThenOncePerMoveException>();
         }
         #region ARRANGE
         private readonly ISnakeGameObjectFactory snakeGameObjectFactory
