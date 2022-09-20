@@ -74,13 +74,15 @@ namespace Snake.Application.Adapters
         {
             var allBody = new LinkedList<PosXY>();
 
-            allBody.AddFirst(data.Snake.Head);
-            data.Snake.Body.ToList().ForEach(i => allBody.AddFirst(i));
-
             if (data.Snake.Tail is { })
             {
                 allBody.AddFirst(data.Snake.Tail);
             }
+
+            data.Snake.Body.ToList().ForEach(i => allBody.AddLast(i));
+
+
+            allBody.AddLast(data.Snake.Head);
 
             _snakeGameObject = new(allBody);
             _snakeGameManager = _gameManagerFactory.CreateSnakeGameManager(_snakeGameObject, data.Level);
@@ -90,6 +92,8 @@ namespace Snake.Application.Adapters
             {
                 this.AddRewardObject(reward);
             }
+
+            _snakeGameManager.AddScore(data.Score);
         }
 
         public void MoveSnake()

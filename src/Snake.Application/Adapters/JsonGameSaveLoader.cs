@@ -18,10 +18,13 @@ namespace Snake.Application.Adapters
 
         public IEnumerable<string> GetSaveFiles()
         {
-            return Directory
-                .GetFiles(saveFolder)
-                .Select(f => f.Split(Path.DirectorySeparatorChar).Last())
-                .Where(f => _format.IsMatch(f));
+            var sortedFiles = new DirectoryInfo(saveFolder)
+                .GetFiles()
+                .OrderBy(f => f.LastWriteTime)
+                .Select(f => f.Name)
+                .ToList();
+
+            return sortedFiles.Where(f => _format.IsMatch(f));
         }
 
         public void LoadGame(string fileName)
@@ -29,10 +32,10 @@ namespace Snake.Application.Adapters
             FileInfo file = new FileInfo(Path.Combine(saveFolder, fileName));
             if (file.Exists)
             {
-                using(Stream sr = file.OpenRead())
+                using (Stream sr = file.OpenRead())
                 {
                     var data = JsonSerializer.Deserialize<SnakeGameData>(sr);
-                    if(data is { })
+                    if (data is { })
                     {
                         _snakeGameService.LoadGame(data);
                     }
@@ -54,8 +57,9 @@ namespace Snake.Application.Adapters
             var data = new
                 SnakeGameData(_snakeGameService.GetSnakeBody(),
                 _snakeGameService.GetRewards().ToList(),
-                _snakeGameService.GetLevel(), 
-                _snakeGameService.CurrentDirection());
+                _snakeGameService.GetLevel(),
+                _snakeGameService.CurrentDirection(),
+                _snakeGameService.GetScore());
 
             using (var stream = new FileStream(Path.Combine(".", "Saves", newFileName), FileMode.Create))
             {
