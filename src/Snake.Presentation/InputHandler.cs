@@ -16,6 +16,11 @@
         {
             handling = false;
         }
+        
+        public void ClearConsoleKeyInfo()
+        {
+            ConsoleKeyInfo = new();
+        }
 
         private void ReadConsoleInput()
         {

@@ -99,9 +99,12 @@ namespace Snake.Presentation.Scenes
                 Render();
                 Thread.Sleep((int)(500 / gameSpeed));
             }
-            Console.Clear();
-            Console.WriteLine($"Game is over your score is {_snakeGameService.GetScore()}.");
-            Console.WriteLine("Press enter to start again.");
+            if (_snakeGameService.GameIsOver())
+            {
+                Console.Clear();
+                Console.WriteLine($"Game is over your score is {_snakeGameService.GetScore()}.");
+                Console.WriteLine("Press enter to start again.");
+            }
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Snake.Presentation.Controller
     public class SnakeGameController : IController
     {
         private readonly ISnakeGameService gameService;
-        private readonly IGameSaveLoader gameSaveLoader;
         private readonly InputHandler inputHandler;
 
         private bool exit = false;
@@ -23,7 +22,6 @@ namespace Snake.Presentation.Controller
         {
             this.gameService = gameService;
             this.inputHandler = inputHandler;
-            this.gameSaveLoader = gameSaveLoader;
 
             gameService.CreateGame(levelGenerator.GenerateLevel().Item1, levelGenerator.GenerateLevel().Item2);
         }

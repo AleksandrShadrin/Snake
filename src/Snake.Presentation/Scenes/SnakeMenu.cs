@@ -76,8 +76,10 @@ namespace Snake.Presentation.Scenes
                         OnSwitchScene?.Invoke(nameof(SnakeGame));
                         break;
                     case MenuCases.LOAD_GAME:
+                        OnSwitchScene?.Invoke(nameof(LoadScene));
                         break;
                     case MenuCases.SAVE_GAME:
+                        OnSwitchScene?.Invoke(nameof(SaveScene));
                         break;
                     case MenuCases.EXIT:
                         OnSwitchScene?.Invoke("exit");
@@ -86,6 +88,12 @@ namespace Snake.Presentation.Scenes
                         break;
                 }
             }
+            if (key == ConsoleKey.Escape)
+            {
+                OnSwitchScene?.Invoke(nameof(SnakeGame));
+            }
+            inputHandler.ClearConsoleKeyInfo();
+
         }
 
         private void SelectNextMenuCase(int maxValue, ConsoleKey key)
