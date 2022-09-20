@@ -10,6 +10,7 @@ namespace Snake.Core.Domain
         public Direction MoveDirection { get; private set; } = Direction.RIGHT; // Змейка начинает движение всегда вправо
         public Level Level { get; private set; }
 
+        private bool snakeCanChangeDirection = true;
         private Predicate<SnakeGameManager> conditions;
         private SnakeGameObject _snake;
         private List<RewardObject> RewardObjects = new();
@@ -30,11 +31,15 @@ namespace Snake.Core.Domain
 
         public void ChangeDirection(Direction direction)
         {
+            if(snakeCanChangeDirection is false)
+                throw new TryChangeSnakeDirectionMoreThenOncePerMoveException();
+
             if ((int)direction == -(int)MoveDirection)
             {
                 throw new WrongDirectionException();
             }
 
+            snakeCanChangeDirection = false;
             MoveDirection = direction;
         }
 
@@ -42,6 +47,7 @@ namespace Snake.Core.Domain
             => RewardObjects;
         public void RemoveRewardObject(RewardObject rewardObject)
             => RewardObjects.Remove(rewardObject);
+
         // Добавляет объект награды, если в его позиции уже есть данный объект,
         // то происходит замена на новый
         public void AddRewardObject(RewardObject rewardObject)
@@ -87,6 +93,7 @@ namespace Snake.Core.Domain
             PosXY newPos = GenerateNewPos(head);
 
             MoveSnake(newPos);
+            snakeCanChangeDirection = true;
         }
 
         private PosXY GenerateNewPos(PosXY prevPos)
