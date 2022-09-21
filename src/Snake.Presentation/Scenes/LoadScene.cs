@@ -12,6 +12,11 @@ namespace Snake.Presentation.Scenes
         private int currentPage = 0;
         private int selectedElementInList = 0;
         private List<string> fileNames;
+        private List<string> FilesOnCurrentPage()
+            => fileNames
+                .Skip(currentPage * filesPerPageCount)
+                .Take(filesPerPageCount)
+                .ToList();
 
         public LoadScene(InputHandler inputHandler, IGameSaveLoader saveLoader, int filesPerPageCount = 10)
         {
@@ -44,9 +49,14 @@ namespace Snake.Presentation.Scenes
                 currentPage = Math.Min(fileNames.Count / filesPerPageCount, currentPage + 1);
             }
 
+            MoveSelectedElementInList();
+        }
+
+        private void MoveSelectedElementInList()
+        {
             if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.DownArrow)
             {
-                selectedElementInList = Math.Min(filesPerPageCount, selectedElementInList + 1);
+                selectedElementInList = Math.Min(FilesOnCurrentPage().Count - 1, selectedElementInList + 1);
             }
             if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.UpArrow)
             {
@@ -56,10 +66,7 @@ namespace Snake.Presentation.Scenes
 
         public override void Render()
         {
-            var filesOnCurrentPage = fileNames
-                .Skip(currentPage * filesPerPageCount)
-                .Take(filesPerPageCount)
-                .ToList();
+            var filesOnCurrentPage = FilesOnCurrentPage();
 
             Console.Clear();
 
