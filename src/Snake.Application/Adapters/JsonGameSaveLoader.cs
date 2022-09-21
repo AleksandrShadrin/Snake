@@ -34,12 +34,12 @@ namespace Snake.Application.Adapters
             {
                 using (Stream sr = file.OpenRead())
                 {
-                    var data = JsonSerializer.Deserialize<SnakeGameData>(sr);
-                    if (data is { })
+                    try
                     {
+                        var data = JsonSerializer.Deserialize<SnakeGameData>(sr);
                         _snakeGameService.LoadGame(data);
                     }
-                    else
+                    catch(JsonException ex)
                     {
                         throw new InvalidJsonDeserializationException(file.FullName);
                     }
