@@ -1,5 +1,6 @@
 ﻿using Shouldly;
 using Snake.Application.Adapters;
+using Snake.Application.Exceptions;
 using Snake.Core.Factories;
 using Snake.Core.ValueObjects;
 
@@ -48,6 +49,39 @@ namespace Snake.Application.Tests
             emptyGameService.GetLevel().GameSize.ShouldBe(level.GameSize);
             emptyGameService.GetLevel().Walls.Count().ShouldBe(0);
             emptyGameService.GetSnakeBody().Head.ShouldBe(startPos);
+        }
+
+        [Fact]
+        public void When_SaveFile_Dont_Exist_Should_Throw_SaveFileDontExistException()
+        {
+            // Arrange
+            DeleteFilesFromSavesFolder();
+            var gameService = GameService();
+            IGameSaveLoader gameSaveLoader = new JsonGameSaveLoader(gameService);
+
+            // Act
+            var exception = Record.Exception(() => gameSaveLoader.LoadGame("file_that_dont_exist.json"));
+
+            // Assert
+            exception.ShouldNotBeNull();
+            exception.ShouldBeOfType<SaveFileDontExistException>();
+        }
+
+        [Fact]
+        public void When_SaveFile_Have_Incorrect_Data_Should_Throw_InvalidJsonDeserializationException()
+        {
+            // Arrange
+            DeleteFilesFromSavesFolder();
+            var gameService = GameService();
+            IGameSaveLoader gameSaveLoader = new JsonGameSaveLoader(gameService);
+            File.CreateText(Path.Combine(SaveDataFolder, "emptySave.json")).Dispose();
+
+            // Act
+            var exception = Record.Exception(() => gameSaveLoader.LoadGame("emptySave.json"));
+
+            // Assert
+            exception.ShouldNotBeNull();
+            exception.ShouldBeOfType<InvalidJsonDeserializationException>();
         }
 
         #region ARRANGE
