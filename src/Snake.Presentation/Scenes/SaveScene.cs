@@ -22,6 +22,7 @@ namespace Snake.Presentation.Scenes
             {
                 dataIsSaved = false;
                 OnSwitchScene?.Invoke(nameof(SnakeMenu));
+                return;
             }
 
             if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.Y && dataIsSaved is false)
