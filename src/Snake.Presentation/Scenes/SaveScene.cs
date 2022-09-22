@@ -21,11 +21,11 @@ namespace Snake.Presentation.Scenes
             if (dataIsSaved)
             {
                 dataIsSaved = false;
-                OnSwitchScene?.Invoke(nameof(SnakeMenu));
+                OnSwitchScene?.Invoke(typeof(SnakeMenu));
                 return;
             }
 
-            if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.Y && dataIsSaved is false)
+            if (inputHandler.ConsoleKey == ConsoleKey.Y && dataIsSaved is false)
             {
                 saveLoader.SaveGame();
                 dataIsSaved = true;
@@ -34,9 +34,9 @@ namespace Snake.Presentation.Scenes
                 Console.WriteLine($"Game data was saved in {savedFile} file.");
                 Console.WriteLine("Press any key to exit from save menu.");
             }
-            else if(inputHandler.ConsoleKeyInfo.Key == ConsoleKey.N && dataIsSaved is false)
+            else if(inputHandler.ConsoleKey == ConsoleKey.N && dataIsSaved is false)
             {
-                OnSwitchScene?.Invoke(nameof(SnakeMenu));
+                OnSwitchScene?.Invoke(typeof(SnakeMenu));
             }
 
 
@@ -50,6 +50,7 @@ namespace Snake.Presentation.Scenes
 
         public override void StartScene()
         {
+            inputHandler.ClearConsoleKeyInfo();
             Render();
         }
     }

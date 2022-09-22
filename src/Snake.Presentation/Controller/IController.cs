@@ -4,7 +4,7 @@ namespace Snake.Presentation.Controller
 {
     internal interface IController
     {
-        void AddSceneToController(string sceneName, BaseScene scene);
+        void AddSceneToController(BaseScene scene);
         Task Start();
     }
 }

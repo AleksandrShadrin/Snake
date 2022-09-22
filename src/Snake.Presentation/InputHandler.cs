@@ -2,7 +2,7 @@
 {
     public class InputHandler
     {
-        public ConsoleKeyInfo ConsoleKeyInfo { get; private set; }
+        public ConsoleKey? ConsoleKey { get; private set; }
         public Action OnChange { get; set; }
 
         private bool handling;
@@ -16,18 +16,18 @@
         {
             handling = false;
         }
-        
+
         public void ClearConsoleKeyInfo()
         {
-            ConsoleKeyInfo = new();
+            ConsoleKey = null;
         }
 
         private void ReadConsoleInput()
         {
             while (handling)
             {
-                var key = Console.ReadKey(true);
-                ConsoleKeyInfo = key;
+                var keyInfo = Console.ReadKey(true);
+                ConsoleKey = keyInfo.Key;
                 OnChange?.Invoke();
             }
         }

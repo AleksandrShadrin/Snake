@@ -27,23 +27,23 @@ namespace Snake.Presentation.Scenes
 
         public override void DoOnKeyPressed()
         {
-            if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.Escape)
+            if (inputHandler.ConsoleKey == ConsoleKey.Escape)
             {
-                OnSwitchScene?.Invoke(nameof(SnakeMenu));
+                OnSwitchScene?.Invoke(typeof(SnakeMenu));
             }
 
-            if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.Enter)
+            if (inputHandler.ConsoleKey == ConsoleKey.Enter)
             {
                 saveLoader.LoadGame(fileNames[currentPage * filesPerPageCount + selectedElementInList]);
-                OnSwitchScene?.Invoke(nameof(SnakeGame));
+                OnSwitchScene?.Invoke(typeof(SnakeGame));
             }
 
-            if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.LeftArrow)
+            if (inputHandler.ConsoleKey == ConsoleKey.LeftArrow)
             {
                 currentPage = Math.Max(0, currentPage - 1);
                 selectedElementInList = 0;
             }
-            if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.RightArrow)
+            if (inputHandler.ConsoleKey == ConsoleKey.RightArrow)
             {
                 selectedElementInList = 0;
                 currentPage = Math.Min(fileNames.Count / filesPerPageCount, currentPage + 1);
@@ -54,11 +54,11 @@ namespace Snake.Presentation.Scenes
 
         private void MoveSelectedElementInList()
         {
-            if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.DownArrow)
+            if (inputHandler.ConsoleKey == ConsoleKey.DownArrow)
             {
                 selectedElementInList = Math.Min(FilesOnCurrentPage().Count - 1, selectedElementInList + 1);
             }
-            if (inputHandler.ConsoleKeyInfo.Key == ConsoleKey.UpArrow)
+            if (inputHandler.ConsoleKey == ConsoleKey.UpArrow)
             {
                 selectedElementInList = Math.Max(0, selectedElementInList - 1);
             }
@@ -89,6 +89,7 @@ namespace Snake.Presentation.Scenes
 
         public override void StartScene()
         {
+            inputHandler.ClearConsoleKeyInfo();
             fileNames = saveLoader.GetSaveFiles().ToList();
 
             while (Selected)

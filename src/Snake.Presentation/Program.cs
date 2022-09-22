@@ -16,6 +16,7 @@ services.AddSingleton<SnakeGame>();
 services.AddSingleton<SnakeMenu>();
 services.AddSingleton<SaveScene>();
 services.AddSingleton<LoadScene>();
+services.AddSingleton<Exit>();
 services.AddSingleton<ILevelGenerator, DefaultLevelGenerator>();
 services.AddSingleton(typeof(InputHandler), (s) =>
 {
@@ -29,12 +30,14 @@ var snakeMenu = provider.GetService<SnakeMenu>();
 var snakeGame = provider.GetService<SnakeGame>();
 var saveScene = provider.GetService<SaveScene>();
 var loadScene = provider.GetService<LoadScene>();
+var exit = provider.GetService<Exit>();
 
 var controller = provider.GetService<IController>();
-controller.AddSceneToController(nameof(snakeMenu), snakeMenu);
-controller.AddSceneToController(nameof(snakeGame), snakeGame);
-controller.AddSceneToController(nameof(saveScene), saveScene);
-controller.AddSceneToController(nameof(loadScene), loadScene);
+controller.AddSceneToController(snakeMenu);
+controller.AddSceneToController(snakeGame);
+controller.AddSceneToController(saveScene);
+controller.AddSceneToController(loadScene);
+controller.AddSceneToController(exit);
 
 snakeMenu.Select();
 await controller.Start();

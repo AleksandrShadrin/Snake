@@ -54,7 +54,7 @@ namespace Snake.Presentation.Scenes
 
         public override void DoOnKeyPressed()
         {
-            var key = _handler.ConsoleKeyInfo.Key;
+            var key = _handler.ConsoleKey;
 
             Direction? direction = key switch
             {
@@ -80,18 +80,20 @@ namespace Snake.Presentation.Scenes
 
             if(key == ConsoleKey.Escape)
             {
-                OnSwitchScene?.Invoke(nameof(SnakeMenu));
+                OnSwitchScene?.Invoke(typeof(SnakeMenu));
             }
 
             if(key == ConsoleKey.Enter && _snakeGameService.GameIsOver())
             {
                 _snakeGameService.CreateGame(_levelGenerator.GenerateLevel().Item1, _levelGenerator.GenerateLevel().Item2);
-                OnSwitchScene?.Invoke(nameof(SnakeGame));
+                OnSwitchScene?.Invoke(typeof(SnakeGame));
             }
         }
 
         public override void StartScene()
         {
+            _handler.ClearConsoleKeyInfo();
+
             while (!_snakeGameService.GameIsOver() && Selected)
             {
                 GenerateReward();

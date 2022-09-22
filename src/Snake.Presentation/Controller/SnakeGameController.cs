@@ -1,6 +1,7 @@
 ﻿using Snake.Application.Adapters;
 using Snake.Presentation.Base;
 using Snake.Presentation.LevelGenerator;
+using Snake.Presentation.Scenes;
 
 namespace Snake.Presentation.Controller
 {
@@ -10,7 +11,7 @@ namespace Snake.Presentation.Controller
         private readonly InputHandler inputHandler;
 
         private bool exit = false;
-        private Dictionary<string, BaseScene> Scenes = new();
+        private Dictionary<Type, BaseScene> Scenes = new();
 
         private BaseScene SelectedScene()
             => Scenes
@@ -26,11 +27,11 @@ namespace Snake.Presentation.Controller
             gameService.CreateGame(levelGenerator.GenerateLevel().Item1, levelGenerator.GenerateLevel().Item2);
         }
 
-        public void AddSceneToController(string sceneName, BaseScene scene)
+        public void AddSceneToController(BaseScene scene)
         {
             scene.OnSwitchScene += SwitchScene;
             inputHandler.OnChange += scene.OnKeyPressed;
-            Scenes.Add(sceneName.ToLower(), scene);
+            Scenes.Add(scene.GetType(), scene);
         }
 
         public Task Start()
@@ -48,17 +49,18 @@ namespace Snake.Presentation.Controller
             return Task.CompletedTask;
         }
 
-        private void SwitchScene(string sceneName)
+        private void SwitchScene(Type type)
         {
-            if (sceneName == "exit")
-            {
-                exit = true;
-                return;
-            }
-
             SelectedScene().UnSelect();
-            Scenes[sceneName.ToLower()].Select();
-            Task.Run(() => SelectedScene()?.StartScene());
+            Thread.Sleep(201);
+            Scenes[type].Select();
+            var t = Task.Run(() => SelectedScene()?.StartScene());
+
+            if (type == typeof(Exit))
+            {
+                var exitScene = SelectedScene() as Exit;
+                exitScene.ExitFromApp += () => exit = true;
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Snake.Presentation.Base
         public abstract void StartScene();
         public abstract void DoOnKeyPressed();
         public abstract void Render();
-        public Action<string> OnSwitchScene { get; set; }
+        public Action<Type> OnSwitchScene { get; set; }
 
 
         public void OnKeyPressed()

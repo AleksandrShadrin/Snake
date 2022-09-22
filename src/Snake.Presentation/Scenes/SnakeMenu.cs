@@ -60,9 +60,9 @@ namespace Snake.Presentation.Scenes
                 .Cast<MenuCases>()
                 .Select(v => (int)v)
                 .Max();
-            var key = inputHandler.ConsoleKeyInfo.Key;
+            var key = inputHandler.ConsoleKey;
 
-            SelectNextMenuCase(maxValue, key);
+            SelectNextMenuCase(maxValue, key.Value);
 
             if (key == ConsoleKey.Enter)
             {
@@ -70,30 +70,29 @@ namespace Snake.Presentation.Scenes
                 {
                     case MenuCases.START_GAME:
                         gameService.CreateGame(levelGenerator.GenerateLevel().Item1, levelGenerator.GenerateLevel().Item2);
-                        OnSwitchScene?.Invoke(nameof(SnakeGame));
+                        OnSwitchScene?.Invoke(typeof(SnakeGame));
                         break;
                     case MenuCases.CONTINUE_GAME:
-                        OnSwitchScene?.Invoke(nameof(SnakeGame));
+                        OnSwitchScene?.Invoke(typeof(SnakeGame));
                         break;
                     case MenuCases.LOAD_GAME:
-                        OnSwitchScene?.Invoke(nameof(LoadScene));
+                        OnSwitchScene?.Invoke(typeof(LoadScene));
                         break;
                     case MenuCases.SAVE_GAME:
-                        OnSwitchScene?.Invoke(nameof(SaveScene));
+                        OnSwitchScene?.Invoke(typeof(SaveScene));
                         break;
                     case MenuCases.EXIT:
-                        OnSwitchScene?.Invoke("exit");
+                        OnSwitchScene?.Invoke(typeof(Exit));
                         break;
                     default:
                         break;
                 }
             }
+
             if (key == ConsoleKey.Escape)
             {
-                OnSwitchScene?.Invoke(nameof(SnakeGame));
+                OnSwitchScene?.Invoke(typeof(SnakeGame));
             }
-            inputHandler.ClearConsoleKeyInfo();
-
         }
 
         private void SelectNextMenuCase(int maxValue, ConsoleKey key)
@@ -124,16 +123,12 @@ namespace Snake.Presentation.Scenes
 
         public override void StartScene()
         {
+            inputHandler.ClearConsoleKeyInfo();
             while (Selected)
             {
                 Render();
                 Thread.Sleep(200);
             }
-        }
-
-        private void SwitchScene(string name)
-        {
-            OnSwitchScene?.Invoke(name);
         }
     }
 }
