@@ -11,6 +11,7 @@ namespace Snake.Presentation.Controller
         private readonly InputHandler inputHandler;
 
         private bool exit = false;
+        private Task launchedTask;
         private Dictionary<Type, BaseScene> Scenes = new();
 
         private BaseScene SelectedScene()
@@ -34,27 +35,27 @@ namespace Snake.Presentation.Controller
             Scenes.Add(scene.GetType(), scene);
         }
 
-        public Task Start()
+        public async Task Start()
         {
-            Task.Run(() => SelectedScene()?.StartScene());
-
+            launchedTask = Task.Run(() => SelectedScene()?.StartScene());
+            
             while (exit is false)
             {
-                Thread.Sleep(200);
+                await Task.Delay(200);
+
             }
 
-            SelectedScene()?.UnSelect();
             Console.Clear();
-
-            return Task.CompletedTask;
         }
 
         private void SwitchScene(Type type)
         {
             SelectedScene().UnSelect();
-            Thread.Sleep(201);
             Scenes[type].Select();
-            var t = Task.Run(() => SelectedScene()?.StartScene());
+
+            launchedTask.Wait();
+            inputHandler.ClearConsoleKeyInfo();
+            launchedTask = SelectedScene()?.StartScene();
 
             if (type == typeof(Exit))
             {
