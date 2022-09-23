@@ -41,8 +41,8 @@ namespace Snake.Core.Domain
 
         public bool CheckCollisionAtPosition(PosXY position)
         {
-            var collided = snakeBody.SingleOrDefault(i => i.Equals(position));
-            return collided is { };
+            var collided = snakeBody.Any(i => i.Equals(position));
+            return collided;
         }
         public void Move(PosXY toPos)
         {

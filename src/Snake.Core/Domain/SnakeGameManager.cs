@@ -34,7 +34,7 @@ namespace Snake.Core.Domain
             if(snakeCanChangeDirection is false)
                 throw new TryChangeSnakeDirectionMoreThenOncePerMoveException();
 
-            if ((int)direction == -(int)MoveDirection)
+            if (Math.Abs((int)direction) == Math.Abs((int)MoveDirection))
             {
                 throw new WrongDirectionException();
             }
