@@ -4,7 +4,7 @@ namespace Snake.Presentation.Base
 {
     public abstract class BaseScene : BaseSelectable, IRenderable
     {
-        public abstract void StartScene();
+        public abstract Task StartScene();
         public abstract void DoOnKeyPressed();
         public abstract void Render();
         public Action<Type> OnSwitchScene { get; set; }
@@ -12,10 +12,8 @@ namespace Snake.Presentation.Base
 
         public void OnKeyPressed()
         {
-            if(Selected is false)
-                return;
-
-            DoOnKeyPressed();
+            if(Selected)
+                DoOnKeyPressed();
         }
     }
 }
