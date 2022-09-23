@@ -130,6 +130,23 @@ namespace Snake.Core.Tests
             exception.ShouldNotBeNull();
             exception.ShouldBeOfType<TryChangeSnakeDirectionMoreThenOncePerMoveException>();
         }
+
+        [Fact]
+        public void When_Try_Change_Direction_On_Already_Choosen_Should_Throw_WrongDirectionException()
+        {
+            // Arrange
+            var gameManager = GetGameManagerWithDeafaultParams();
+
+            // Act
+            var exception = Record.Exception(() =>
+            {
+                gameManager.ChangeDirection(Constants.Direction.RIGHT);
+            });
+
+            // Assert
+            exception.ShouldNotBeNull();
+            exception.ShouldBeOfType<WrongDirectionException>();
+        }
         #region ARRANGE
         private readonly ISnakeGameObjectFactory snakeGameObjectFactory
             = new SnakeGameObjectFactory();
