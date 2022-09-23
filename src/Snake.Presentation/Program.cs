@@ -26,6 +26,7 @@ services.AddSingleton(typeof(InputHandler), (s) =>
 });
 
 var provider = services.BuildServiceProvider();
+
 var snakeMenu = provider.GetService<SnakeMenu>();
 var snakeGame = provider.GetService<SnakeGame>();
 var saveScene = provider.GetService<SaveScene>();
@@ -41,4 +42,3 @@ controller.AddSceneToController(exit);
 
 snakeMenu.Select();
 await controller.Start();
-Console.Clear();
