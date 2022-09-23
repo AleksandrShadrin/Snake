@@ -1,6 +1,7 @@
 ﻿using Snake.Application.Models;
 using Snake.Core.Constants;
 using Snake.Core.Domain;
+using Snake.Core.Exceptions;
 using Snake.Core.Factories;
 using Snake.Core.ValueObjects;
 
@@ -81,12 +82,20 @@ namespace Snake.Application.Adapters
 
             data.Snake.Body.ToList().ForEach(i => allBody.AddLast(i));
 
-
             allBody.AddLast(data.Snake.Head);
 
             _snakeGameObject = new(allBody);
             _snakeGameManager = _gameManagerFactory.CreateSnakeGameManager(_snakeGameObject, data.Level);
-            _snakeGameManager.ChangeDirection(data.Direction);
+
+            try
+            {
+                _snakeGameManager.ChangeDirection(data.Direction);
+            }
+            catch (SnakeException ex)
+            {
+
+            }
+            
 
             foreach (var reward in data.RewardObjects)
             {
