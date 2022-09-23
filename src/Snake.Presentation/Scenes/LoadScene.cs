@@ -87,15 +87,14 @@ namespace Snake.Presentation.Scenes
             Console.WriteLine("{0,8}", $"{currentPage + 1}/{fileNames.Count / filesPerPageCount + 1}");
         }
 
-        public override void StartScene()
+        public override async Task StartScene()
         {
-            inputHandler.ClearConsoleKeyInfo();
             fileNames = saveLoader.GetSaveFiles().ToList();
 
             while (Selected)
             {
                 Render();
-                Thread.Sleep(300);
+                await Task.Delay(200);
             }
         }
     }

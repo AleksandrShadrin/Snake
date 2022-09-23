@@ -38,8 +38,6 @@ namespace Snake.Presentation.Scenes
             {
                 OnSwitchScene?.Invoke(typeof(SnakeMenu));
             }
-
-
         }
 
         public override void Render()
@@ -48,10 +46,13 @@ namespace Snake.Presentation.Scenes
             Console.WriteLine("Do you want to save this game? [Y/N]");
         }
 
-        public override void StartScene()
+        public override async Task StartScene()
         {
-            inputHandler.ClearConsoleKeyInfo();
             Render();
+            while (Selected)
+            {
+                await Task.Delay(100);
+            }
         }
     }
 }

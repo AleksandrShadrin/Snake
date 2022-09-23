@@ -65,7 +65,7 @@ namespace Snake.Presentation.Scenes
                 _ => null
             };
 
-            if (direction.HasValue)
+            if (direction.HasValue && !_snakeGameService.GameIsOver())
             {
                 try
                 {
@@ -90,16 +90,14 @@ namespace Snake.Presentation.Scenes
             }
         }
 
-        public override void StartScene()
+        public override async Task StartScene()
         {
-            _handler.ClearConsoleKeyInfo();
-
             while (!_snakeGameService.GameIsOver() && Selected)
             {
                 GenerateReward();
                 _snakeGameService.MoveSnake();
                 Render();
-                Thread.Sleep((int)(500 / gameSpeed));
+                await Task.Delay((int)(250 / gameSpeed));
             }
             if (_snakeGameService.GameIsOver())
             {

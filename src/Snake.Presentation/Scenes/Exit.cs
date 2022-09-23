@@ -7,6 +7,7 @@ namespace Snake.Presentation.Scenes
         public Action ExitFromApp { get; set; }
 
         private readonly InputHandler _inputHandler;
+        private bool buttonPressed = false;
         public Exit(InputHandler inputHandler)
         {
             _inputHandler = inputHandler;
@@ -16,6 +17,7 @@ namespace Snake.Presentation.Scenes
             if(_inputHandler.ConsoleKey.HasValue)
             {
                 ExitFromApp?.Invoke();
+                buttonPressed = true;
                 Console.Clear();
             }
         }
@@ -25,11 +27,14 @@ namespace Snake.Presentation.Scenes
             Console.WriteLine("Press any key.");
         }
 
-        public override void StartScene()
+        public override async Task StartScene()
         {
-            _inputHandler.ClearConsoleKeyInfo();
             Console.Clear();
             Render();
+            while(buttonPressed is false)
+            {
+                await Task.Delay(100);
+            }
         }
     }
 }

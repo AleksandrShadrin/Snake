@@ -12,7 +12,6 @@ namespace Snake.Presentation.Scenes
         private readonly ILevelGenerator levelGenerator;
 
         private MenuCases selectedMenuCase = MenuCases.START_GAME;
-        private bool MenuIsInvoked = false;
 
         public SnakeMenu(InputHandler inputHandler, ISnakeGameService gameService, ILevelGenerator levelGenerator)
         {
@@ -21,20 +20,9 @@ namespace Snake.Presentation.Scenes
             this.levelGenerator = levelGenerator;
         }
 
-        public void InvokeMenu()
-        {
-            MenuIsInvoked = true;
-        }
-
-        public void CloseMenu()
-        {
-            MenuIsInvoked = false;
-        }
-
         public override void Render()
         {
             Console.Clear();
-
             Enum
                 .GetValues(typeof(MenuCases))
                 .Cast<MenuCases>()
@@ -63,6 +51,7 @@ namespace Snake.Presentation.Scenes
             var key = inputHandler.ConsoleKey;
 
             SelectNextMenuCase(maxValue, key.Value);
+            Render();
 
             if (key == ConsoleKey.Enter)
             {
@@ -121,13 +110,13 @@ namespace Snake.Presentation.Scenes
             }
         }
 
-        public override void StartScene()
+        public override async Task StartScene()
         {
-            inputHandler.ClearConsoleKeyInfo();
+            Render();
+
             while (Selected)
             {
-                Render();
-                Thread.Sleep(200);
+                await Task.Delay(200);
             }
         }
     }
