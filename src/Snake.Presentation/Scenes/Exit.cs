@@ -1,24 +1,25 @@
 ﻿using Snake.Presentation.Base;
+using Snake.Presentation.Controller;
 
 namespace Snake.Presentation.Scenes
 {
     public class Exit : BaseScene
     {
-        public Action ExitFromApp { get; set; }
-
         private readonly InputHandler _inputHandler;
         private bool buttonPressed = false;
-        public Exit(InputHandler inputHandler)
+        private readonly IController _controller;
+
+        public Exit(InputHandler inputHandler, IController controller)
         {
             _inputHandler = inputHandler;
+            _controller = controller;
         }
         public override void DoOnKeyPressed()
         {
             if(_inputHandler.ConsoleKey.HasValue)
             {
-                ExitFromApp?.Invoke();
+                _controller.Stop();
                 buttonPressed = true;
-                Console.Clear();
             }
         }
 

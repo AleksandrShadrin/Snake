@@ -2,9 +2,10 @@
 
 namespace Snake.Presentation.Controller
 {
-    internal interface IController
+    public interface IController
     {
         void AddSceneToController(BaseScene scene);
+        Task Stop();
         Task Start();
     }
 }

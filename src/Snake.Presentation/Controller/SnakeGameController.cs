@@ -42,7 +42,6 @@ namespace Snake.Presentation.Controller
             while (exit is false)
             {
                 await Task.Delay(200);
-
             }
 
             Console.Clear();
@@ -56,12 +55,13 @@ namespace Snake.Presentation.Controller
             launchedTask.Wait();
             inputHandler.ClearConsoleKeyInfo();
             launchedTask = SelectedScene()?.StartScene();
+        }
 
-            if (type == typeof(Exit))
-            {
-                var exitScene = SelectedScene() as Exit;
-                exitScene.ExitFromApp += () => exit = true;
-            }
+        public async Task Stop()
+        {
+            SelectedScene()?.UnSelect();
+            await launchedTask;
+            exit = true;
         }
     }
 }
