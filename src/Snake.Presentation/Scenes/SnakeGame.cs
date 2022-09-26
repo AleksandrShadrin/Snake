@@ -47,8 +47,13 @@ namespace Snake.Presentation.Scenes
                 var rndPos = new PosXY(
                     valueGenerator.Next(_snakeGameService.GetLevel().GameSize.X - 1),
                     valueGenerator.Next(_snakeGameService.GetLevel().GameSize.Y - 1));
+                try
+                {
+                    _snakeGameService.AddRewardObject(new(rndPos, 2));
+                } catch(SnakeException ex)
+                {
 
-                _snakeGameService.AddRewardObject(new(rndPos, 2));
+                }
             }
         }
 
