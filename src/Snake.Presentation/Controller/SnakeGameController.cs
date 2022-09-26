@@ -50,9 +50,9 @@ namespace Snake.Presentation.Controller
         private void SwitchScene(Type type)
         {
             SelectedScene().UnSelect();
-            Scenes[type].Select();
-
+            
             launchedTask.Wait();
+            Scenes[type].Select();
             inputHandler.ClearConsoleKeyInfo();
             launchedTask = SelectedScene()?.StartScene();
         }
