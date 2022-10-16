@@ -4,16 +4,22 @@ using Snake.Core.ValueObjects;
 
 namespace Snake.Core.Domain
 {
+    /// <summary>
+    /// Игровой менеджер, управляет состоянием игры, а также игровыми объектами (змейка, награды, стены)
+    /// </summary>
     public class SnakeGameManager
     {
         public uint Score { get; private set; }
-        public Direction MoveDirection { get; private set; } = Direction.RIGHT; // Змейка начинает движение всегда вправо
+
+        public Direction MoveDirection { get; private set; } =
+            Direction.RIGHT; // Змейка начинает движение всегда вправо
+
         public Level Level { get; private set; }
 
         private bool snakeCanChangeDirection = true;
         private Predicate<SnakeGameManager> conditions;
-        private SnakeGameObject _snake;
-        private List<RewardObject> RewardObjects = new();
+        private readonly SnakeGameObject _snake;
+        private readonly List<RewardObject> RewardObjects = new();
 
         public SnakeGameManager(SnakeGameObject snake, Level level)
         {
@@ -21,17 +27,25 @@ namespace Snake.Core.Domain
             {
                 throw new SnakeIsEmptyException();
             }
+
             if (level is null)
             {
                 throw new ArgumentNullException(nameof(level));
             }
+
             _snake = snake;
             Level = level;
         }
 
+        /// <summary>
+        /// Меняет направление змейки
+        /// </summary>
+        /// <param name="direction"> enum class, в котором заданы возможные направления</param>
+        /// <exception cref="TryChangeSnakeDirectionMoreThenOncePerMoveException"> исключение, когда пытаются поменять направление > 1 раза за перемещение змейки</exception>
+        /// <exception cref="WrongDirectionException"> исключение, когда неверно изменяется направление</exception>
         public void ChangeDirection(Direction direction)
         {
-            if(snakeCanChangeDirection is false)
+            if (snakeCanChangeDirection is false)
                 throw new TryChangeSnakeDirectionMoreThenOncePerMoveException();
 
             if (Math.Abs((int)direction) == Math.Abs((int)MoveDirection))
@@ -43,13 +57,31 @@ namespace Snake.Core.Domain
             MoveDirection = direction;
         }
 
+        /// <summary>
+        /// Возвращает копию наград
+        /// </summary>
+        /// <returns> Возвращает readonly list</returns>
         public IReadOnlyList<RewardObject> GetRewardObjects()
-            => RewardObjects;
+            => RewardObjects.Select(ro => ro with { }).ToList();
+
+        /// <summary>
+        /// Удаляет награду
+        /// </summary>
+        /// <param name="rewardObject"> награда, которая должна совпадать по значениям с какой-либо уже существующей наградой, чтобы быть удаленной</param>
         public void RemoveRewardObject(RewardObject rewardObject)
             => RewardObjects.Remove(rewardObject);
 
-        // Добавляет объект награды, если в его позиции уже есть данный объект,
-        // то происходит замена на новый
+        /// <summary>
+        /// Добавляет объект награды, если в его позиции уже есть данный объект, то происходит замена на новый
+        /// </summary>
+        /// <param name="rewardObject">
+        /// RewardObject, который будет добавлен, если в позиции в которую он добавляется
+        /// не существует стены и награды, если в этой позиции уже есть RewardObject, то происходит
+        /// замена старого на новый, а если стена, то создается исключение
+        /// </param>
+        /// <exception cref="RewardObjectCantBeInWallPosException">
+        /// исключение, когда награду пытаются добавить в позицию, где находится стена
+        /// </exception>
         public void AddRewardObject(RewardObject rewardObject)
         {
             var existedObject = RewardObjects.SingleOrDefault(i => i.Position == rewardObject.Position);
@@ -64,13 +96,21 @@ namespace Snake.Core.Domain
 
             RewardObjects.Add(rewardObject);
         }
-        // Добавление условий окончания игры
+
+        /// <summary>
+        /// Добавляет условие для окончания игры
+        /// </summary>
+        /// <param name="condition">Predicate, в параметрах которого SnakeGameManager</param>
         public SnakeGameManager AddGameOverConditions(Predicate<SnakeGameManager> condition)
         {
             conditions += condition;
             return this;
         }
 
+        /// <summary>
+        /// Проверка окончания игры
+        /// </summary>
+        /// <returns> Возвращает true, если игра завершена</returns>
         public bool GameIsOver()
         {
             var result = conditions?.Invoke(this);
@@ -78,14 +118,22 @@ namespace Snake.Core.Domain
             {
                 return _snake.SnakeIsDead() || result.Value;
             }
+
             return _snake.SnakeIsDead();
         }
 
+        /// <summary>
+        /// Добавляет очки
+        /// </summary>
+        /// <param name="points"> положительное целое число, которое будет добавлено ко всем очкам</param>
         public void AddScore(uint points)
         {
             Score += points;
         }
-        
+
+        /// <summary>
+        /// Перемещает змейку в следующую позицию
+        /// </summary>
         public void MoveSnake()
         {
             var head = _snake.GetHead();
@@ -100,10 +148,22 @@ namespace Snake.Core.Domain
         {
             return MoveDirection switch
             {
-                Direction.TOP => prevPos with { X = prevPos.X, Y = (prevPos.Y - 1) < 0 ? Level.GameSize.Y : prevPos.Y - 1 },
-                Direction.BOTTOM => prevPos with { X = prevPos.X, Y = (prevPos.Y + 1) >= Level.GameSize.Y ? 0 : prevPos.Y + 1 },
-                Direction.RIGHT => prevPos with { X = (prevPos.X + 1) >= Level.GameSize.X ? 0 : prevPos.X + 1, Y = prevPos.Y },
-                Direction.LEFT => prevPos with { X = (prevPos.X - 1) < 0 ? Level.GameSize.X : prevPos.X - 1, Y = prevPos.Y },
+                Direction.TOP => prevPos with
+                {
+                    X = prevPos.X, Y = (prevPos.Y - 1) < 0 ? Level.GameSize.Y : prevPos.Y - 1
+                },
+                Direction.BOTTOM => prevPos with
+                {
+                    X = prevPos.X, Y = (prevPos.Y + 1) >= Level.GameSize.Y ? 0 : prevPos.Y + 1
+                },
+                Direction.RIGHT => prevPos with
+                {
+                    X = (prevPos.X + 1) >= Level.GameSize.X ? 0 : prevPos.X + 1, Y = prevPos.Y
+                },
+                Direction.LEFT => prevPos with
+                {
+                    X = (prevPos.X - 1) < 0 ? Level.GameSize.X : prevPos.X - 1, Y = prevPos.Y
+                },
             };
         }
 
@@ -126,9 +186,8 @@ namespace Snake.Core.Domain
 
         private void CheckCollisionWithRewards()
         {
-            var collidedObjects = RewardObjects.
-                            Where(i => _snake.CheckCollisionAtPosition(i.Position))
-                            .ToList();
+            var collidedObjects = RewardObjects.Where(i => _snake.CheckCollisionAtPosition(i.Position))
+                .ToList();
 
             foreach (var item in collidedObjects)
             {
