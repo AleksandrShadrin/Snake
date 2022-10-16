@@ -5,36 +5,36 @@ namespace Snake.Presentation.Scenes
 {
     public class SaveScene : BaseScene
     {
-        private readonly IGameSaveLoader saveLoader;
-        private readonly InputHandler inputHandler;
+        private readonly IGameSaveLoader _saveLoader;
+        private readonly InputHandler _inputHandler;
 
-        private bool dataIsSaved = false;
+        private bool _dataIsSaved = false;
 
         public SaveScene(IGameSaveLoader saveLoader, InputHandler inputHandler)
         {
-            this.saveLoader = saveLoader;
-            this.inputHandler = inputHandler;
+            _saveLoader = saveLoader;
+            _inputHandler = inputHandler;
         }
 
         public override void DoOnKeyPressed()
         {
-            if (dataIsSaved)
+            if (_dataIsSaved)
             {
-                dataIsSaved = false;
+                _dataIsSaved = false;
                 OnSwitchScene?.Invoke(typeof(SnakeMenu));
                 return;
             }
 
-            if (inputHandler.ConsoleKey == ConsoleKey.Y && dataIsSaved is false)
+            if (_inputHandler.ConsoleKey == ConsoleKey.Y && _dataIsSaved is false)
             {
-                saveLoader.SaveGame();
-                dataIsSaved = true;
+                _saveLoader.SaveGame();
+                _dataIsSaved = true;
                 Console.Clear();
-                var savedFile = saveLoader.GetSaveFiles().LastOrDefault();
+                var savedFile = _saveLoader.GetSaveFiles().LastOrDefault();
                 Console.WriteLine($"Game data was saved in {savedFile} file.");
                 Console.WriteLine("Press any key to exit from save menu.");
             }
-            else if(inputHandler.ConsoleKey == ConsoleKey.N && dataIsSaved is false)
+            else if (_inputHandler.ConsoleKey == ConsoleKey.N && _dataIsSaved is false)
             {
                 OnSwitchScene?.Invoke(typeof(SnakeMenu));
             }
