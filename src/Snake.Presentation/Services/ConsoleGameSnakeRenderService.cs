@@ -23,6 +23,7 @@ namespace Snake.Presentation.Services
             {
                 allBody.Add(snake.Tail);
             }
+
             allBody.AddRange(snake.Body);
             allBody.Add(snake.Head);
 
@@ -54,6 +55,7 @@ namespace Snake.Presentation.Services
                 Console.WriteLine('\u2593');
             });
         }
+
         private void PrintBody(List<PosXY> allBody)
         {
             if (allBody.Count >= 3)
@@ -125,6 +127,7 @@ namespace Snake.Presentation.Services
                 }
             }
         }
+
         private Direction CheckDirection(PosXY first, PosXY second)
         {
             var resultX = first.X - second.X;
