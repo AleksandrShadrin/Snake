@@ -1,29 +1,29 @@
 ﻿using Snake.Application.Adapters;
 using Snake.Presentation.Base;
 using Snake.Presentation.LevelGenerator;
-using Snake.Presentation.Scenes;
 
 namespace Snake.Presentation.Controller
 {
     public class SnakeGameController : IController
     {
-        private readonly ISnakeGameService gameService;
-        private readonly InputHandler inputHandler;
+        private readonly ISnakeGameService _gameService;
+        private readonly InputHandler _inputHandler;
 
-        private bool exit = false;
-        private Task launchedTask;
-        private Dictionary<Type, BaseScene> Scenes = new();
+        private bool _exit = false;
+        private Task _launchedTask;
+        private Dictionary<Type, BaseScene> _scenes = new();
 
-        private BaseScene SelectedScene()
-            => Scenes
+        private BaseScene? SelectedScene()
+            => _scenes
                 .Where(kvp => kvp.Value.Selected is true)
                 .Select(kvp => kvp.Value)
                 .FirstOrDefault();
 
-        public SnakeGameController(ISnakeGameService gameService, IGameSaveLoader gameSaveLoader, InputHandler inputHandler, ILevelGenerator levelGenerator)
+        public SnakeGameController(ISnakeGameService gameService, IGameSaveLoader gameSaveLoader,
+            InputHandler inputHandler, ILevelGenerator levelGenerator)
         {
-            this.gameService = gameService;
-            this.inputHandler = inputHandler;
+            this._gameService = gameService;
+            this._inputHandler = inputHandler;
 
             gameService.CreateGame(levelGenerator.GenerateLevel().Item1, levelGenerator.GenerateLevel().Item2);
         }
@@ -31,15 +31,15 @@ namespace Snake.Presentation.Controller
         public void AddSceneToController(BaseScene scene)
         {
             scene.OnSwitchScene += SwitchScene;
-            inputHandler.OnChange += scene.OnKeyPressed;
-            Scenes.Add(scene.GetType(), scene);
+            _inputHandler.OnChange += scene.OnKeyPressed;
+            _scenes.Add(scene.GetType(), scene);
         }
 
         public async Task Start()
         {
-            launchedTask = Task.Run(() => SelectedScene()?.StartScene());
-            
-            while (exit is false)
+            _launchedTask = Task.Run(() => SelectedScene()?.StartScene());
+
+            while (_exit is false)
             {
                 await Task.Delay(200);
             }
@@ -49,19 +49,19 @@ namespace Snake.Presentation.Controller
 
         private void SwitchScene(Type type)
         {
-            SelectedScene().UnSelect();
-            
-            launchedTask.Wait();
-            Scenes[type].Select();
-            inputHandler.ClearConsoleKeyInfo();
-            launchedTask = SelectedScene()?.StartScene();
+            SelectedScene()?.UnSelect();
+
+            _launchedTask.Wait();
+            _scenes[type].Select();
+            _inputHandler.ClearConsoleKeyInfo();
+            _launchedTask = SelectedScene()?.StartScene();
         }
 
         public async Task Stop()
         {
             SelectedScene()?.UnSelect();
-            await launchedTask;
-            exit = true;
+            await _launchedTask;
+            _exit = true;
         }
     }
 }
