@@ -7,17 +7,17 @@ namespace Snake.Presentation.Scenes
 {
     public class SnakeMenu : BaseScene
     {
-        private readonly InputHandler inputHandler;
-        private readonly ISnakeGameService gameService;
-        private readonly ILevelGenerator levelGenerator;
+        private readonly InputHandler _inputHandler;
+        private readonly ISnakeGameService _gameService;
+        private readonly ILevelGenerator _levelGenerator;
 
         private MenuCases selectedMenuCase = MenuCases.START_GAME;
 
         public SnakeMenu(InputHandler inputHandler, ISnakeGameService gameService, ILevelGenerator levelGenerator)
         {
-            this.inputHandler = inputHandler;
-            this.gameService = gameService;
-            this.levelGenerator = levelGenerator;
+            _inputHandler = inputHandler;
+            _gameService = gameService;
+            _levelGenerator = levelGenerator;
         }
 
         public override void Render()
@@ -48,7 +48,7 @@ namespace Snake.Presentation.Scenes
                 .Cast<MenuCases>()
                 .Select(v => (int)v)
                 .Max();
-            var key = inputHandler.ConsoleKey;
+            var key = _inputHandler.ConsoleKey;
 
             SelectNextMenuCase(maxValue, key.Value);
             Render();
@@ -58,7 +58,8 @@ namespace Snake.Presentation.Scenes
                 switch (selectedMenuCase)
                 {
                     case MenuCases.START_GAME:
-                        gameService.CreateGame(levelGenerator.GenerateLevel().Item1, levelGenerator.GenerateLevel().Item2);
+                        _gameService.CreateGame(_levelGenerator.GenerateLevel().Item1,
+                            _levelGenerator.GenerateLevel().Item2);
                         OnSwitchScene?.Invoke(typeof(SnakeGame));
                         break;
                     case MenuCases.CONTINUE_GAME:
@@ -97,6 +98,7 @@ namespace Snake.Presentation.Scenes
                     selectedMenuCase = (MenuCases)(int)(selectedMenuCase + 1);
                 }
             }
+
             if (key == ConsoleKey.UpArrow)
             {
                 if ((int)selectedMenuCase - 1 < 1)
