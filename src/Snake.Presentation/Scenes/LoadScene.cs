@@ -5,48 +5,56 @@ namespace Snake.Presentation.Scenes
 {
     public class LoadScene : BaseScene
     {
-        private readonly IGameSaveLoader saveLoader;
-        private readonly InputHandler inputHandler;
+        private readonly IGameSaveLoader _saveLoader;
+        private readonly InputHandler _inputHandler;
 
-        private int filesPerPageCount;
-        private int currentPage = 0;
-        private int selectedElementInList = 0;
-        private List<string> fileNames;
+        private int _filesPerPageCount;
+        private int _currentPage = 0;
+        private int _selectedElementInList = 0;
+        private List<string> _fileNames;
+
         private List<string> FilesOnCurrentPage()
-            => fileNames
-                .Skip(currentPage * filesPerPageCount)
-                .Take(filesPerPageCount)
+            => _fileNames
+                .Skip(_currentPage * _filesPerPageCount)
+                .Take(_filesPerPageCount)
                 .ToList();
 
         public LoadScene(InputHandler inputHandler, IGameSaveLoader saveLoader, int filesPerPageCount = 10)
         {
-            this.inputHandler = inputHandler;
-            this.saveLoader = saveLoader;
-            this.filesPerPageCount = filesPerPageCount;
+            _inputHandler = inputHandler;
+            _saveLoader = saveLoader;
+            _filesPerPageCount = filesPerPageCount;
         }
 
         public override void DoOnKeyPressed()
         {
-            if (inputHandler.ConsoleKey == ConsoleKey.Escape)
+            if (_inputHandler.ConsoleKey == ConsoleKey.Escape)
             {
                 OnSwitchScene?.Invoke(typeof(SnakeMenu));
             }
 
-            if (inputHandler.ConsoleKey == ConsoleKey.Enter)
+            if (_inputHandler.ConsoleKey == ConsoleKey.Enter)
             {
-                saveLoader.LoadGame(fileNames[currentPage * filesPerPageCount + selectedElementInList]);
+                if (_fileNames.Count() == 0)
+                {
+                    OnSwitchScene?.Invoke(typeof(SnakeMenu));
+                    return;
+                }
+
+                _saveLoader.LoadGame(_fileNames[_currentPage * _filesPerPageCount + _selectedElementInList]);
                 OnSwitchScene?.Invoke(typeof(SnakeGame));
             }
 
-            if (inputHandler.ConsoleKey == ConsoleKey.LeftArrow)
+            if (_inputHandler.ConsoleKey == ConsoleKey.LeftArrow)
             {
-                currentPage = Math.Max(0, currentPage - 1);
-                selectedElementInList = 0;
+                _currentPage = Math.Max(0, _currentPage - 1);
+                _selectedElementInList = 0;
             }
-            if (inputHandler.ConsoleKey == ConsoleKey.RightArrow)
+
+            if (_inputHandler.ConsoleKey == ConsoleKey.RightArrow)
             {
-                selectedElementInList = 0;
-                currentPage = Math.Min(fileNames.Count / filesPerPageCount, currentPage + 1);
+                _selectedElementInList = 0;
+                _currentPage = Math.Min(_fileNames.Count / _filesPerPageCount, _currentPage + 1);
             }
 
             MoveSelectedElementInList();
@@ -54,13 +62,14 @@ namespace Snake.Presentation.Scenes
 
         private void MoveSelectedElementInList()
         {
-            if (inputHandler.ConsoleKey == ConsoleKey.DownArrow)
+            if (_inputHandler.ConsoleKey == ConsoleKey.DownArrow)
             {
-                selectedElementInList = Math.Min(FilesOnCurrentPage().Count - 1, selectedElementInList + 1);
+                _selectedElementInList = Math.Min(FilesOnCurrentPage().Count - 1, _selectedElementInList + 1);
             }
-            if (inputHandler.ConsoleKey == ConsoleKey.UpArrow)
+
+            if (_inputHandler.ConsoleKey == ConsoleKey.UpArrow)
             {
-                selectedElementInList = Math.Max(0, selectedElementInList - 1);
+                _selectedElementInList = Math.Max(0, _selectedElementInList - 1);
             }
         }
 
@@ -72,7 +81,7 @@ namespace Snake.Presentation.Scenes
 
             for (int i = 0; i < filesOnCurrentPage.Count; i++)
             {
-                if (i == selectedElementInList)
+                if (i == _selectedElementInList)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"{i + 1}.{filesOnCurrentPage[i]}");
@@ -84,12 +93,12 @@ namespace Snake.Presentation.Scenes
                 }
             }
 
-            Console.WriteLine("{0,8}", $"{currentPage + 1}/{fileNames.Count / filesPerPageCount + 1}");
+            Console.WriteLine("{0,8}", $"{_currentPage + 1}/{_fileNames.Count / _filesPerPageCount + 1}");
         }
 
         public override async Task StartScene()
         {
-            fileNames = saveLoader.GetSaveFiles().ToList();
+            _fileNames = _saveLoader.GetSaveFiles().ToList();
 
             while (Selected)
             {
