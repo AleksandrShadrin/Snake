@@ -6,7 +6,7 @@ namespace Snake.Presentation.Scenes
     public class Exit : BaseScene
     {
         private readonly InputHandler _inputHandler;
-        private bool buttonPressed = false;
+        private bool _buttonPressed = false;
         private readonly IController _controller;
 
         public Exit(InputHandler inputHandler, IController controller)
@@ -14,12 +14,13 @@ namespace Snake.Presentation.Scenes
             _inputHandler = inputHandler;
             _controller = controller;
         }
+
         public override void DoOnKeyPressed()
         {
-            if(_inputHandler.ConsoleKey.HasValue)
+            if (_inputHandler.ConsoleKey.HasValue)
             {
                 _controller.Stop();
-                buttonPressed = true;
+                _buttonPressed = true;
             }
         }
 
@@ -32,7 +33,7 @@ namespace Snake.Presentation.Scenes
         {
             Console.Clear();
             Render();
-            while(buttonPressed is false)
+            while (_buttonPressed is false)
             {
                 await Task.Delay(100);
             }
