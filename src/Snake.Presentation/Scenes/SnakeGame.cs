@@ -14,11 +14,12 @@ namespace Snake.Presentation.Scenes
         private readonly ISnakeGameService _snakeGameService;
         private readonly InputHandler _handler;
         private readonly ILevelGenerator _levelGenerator;
+        private readonly Random _valueGenerator = new Random();
 
-        private double gameSpeed = 4;
-        private Random valueGenerator = new Random();
+        private double _gameSpeed = 4;
 
-        public SnakeGame(ISnakeGameService snakeGameService, IGameSnakeRenderService renderService, InputHandler handler, ILevelGenerator levelGenerator)
+        public SnakeGame(ISnakeGameService snakeGameService, IGameSnakeRenderService renderService,
+            InputHandler handler, ILevelGenerator levelGenerator)
         {
             _snakeGameService = snakeGameService;
             _renderService = renderService;
@@ -42,17 +43,17 @@ namespace Snake.Presentation.Scenes
 
         private void GenerateReward()
         {
-            if (valueGenerator.NextDouble() > 0.85)
+            if (_valueGenerator.NextDouble() > 0.85)
             {
                 var rndPos = new PosXY(
-                    valueGenerator.Next(_snakeGameService.GetLevel().GameSize.X - 1),
-                    valueGenerator.Next(_snakeGameService.GetLevel().GameSize.Y - 1));
+                    _valueGenerator.Next(_snakeGameService.GetLevel().GameSize.X - 1),
+                    _valueGenerator.Next(_snakeGameService.GetLevel().GameSize.Y - 1));
                 try
                 {
                     _snakeGameService.AddRewardObject(new(rndPos, 2));
-                } catch(SnakeException ex)
+                }
+                catch (SnakeException ex)
                 {
-
                 }
             }
         }
@@ -79,18 +80,18 @@ namespace Snake.Presentation.Scenes
                 }
                 catch (SnakeException ex)
                 {
-                    
                 }
             }
 
-            if(key == ConsoleKey.Escape)
+            if (key == ConsoleKey.Escape)
             {
                 OnSwitchScene?.Invoke(typeof(SnakeMenu));
             }
 
-            if(key == ConsoleKey.Enter && _snakeGameService.GameIsOver())
+            if (key == ConsoleKey.Enter && _snakeGameService.GameIsOver())
             {
-                _snakeGameService.CreateGame(_levelGenerator.GenerateLevel().Item1, _levelGenerator.GenerateLevel().Item2);
+                _snakeGameService.CreateGame(_levelGenerator.GenerateLevel().Item1,
+                    _levelGenerator.GenerateLevel().Item2);
                 OnSwitchScene?.Invoke(typeof(SnakeGame));
             }
         }
@@ -102,8 +103,9 @@ namespace Snake.Presentation.Scenes
                 GenerateReward();
                 _snakeGameService.MoveSnake();
                 Render();
-                await Task.Delay((int)(250 / gameSpeed));
+                await Task.Delay((int)(250 / _gameSpeed));
             }
+
             if (_snakeGameService.GameIsOver())
             {
                 Console.Clear();
