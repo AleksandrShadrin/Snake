@@ -23,7 +23,8 @@ namespace Snake.Core.Tests
         }
 
         [Fact]
-        public void Reward_Object_That_Added_At_Position_That_Contain_Other_Reward_Object_Will_Update_It()
+        public void
+            Manager_When_Reward_Object_That_Added_At_Position_That_Contain_Other_Reward_Object_Should_Update_It()
         {
             // Arrange
             var firstRewardObject = new RewardObject(new PosXY(1, 1), 4);
@@ -38,6 +39,7 @@ namespace Snake.Core.Tests
             gameManager.GetRewardObjects().Count.ShouldBe(1);
             gameManager.GetRewardObjects().First().Reward.ShouldBe((uint)8);
         }
+
         [Fact]
         public void When_SnakeGameObject_Is_Dead_GameManager_GameOver_Should_Be_True()
         {
@@ -56,7 +58,7 @@ namespace Snake.Core.Tests
         }
 
         [Fact]
-        public void Game_Should_Be_Over_If_GameOver_Condition_For_Score_Will_Be_Added()
+        public void Game_Should_Be_Over_When_GameOver_Condition_For_Score_Is_Added()
         {
             // Arrange
             var gameManager = GetGameManagerWithDeafaultParams();
@@ -70,7 +72,7 @@ namespace Snake.Core.Tests
         }
 
         [Fact]
-        public void If_Field_Is_End_Snake_Should_Appear_At_Reverse_End()
+        public void When_Field_Is_End_Snake_Should_Appear_At_Reverse_End()
         {
             // Arrange
             var snake = GetSnakeInDefaultPosition();
@@ -90,7 +92,8 @@ namespace Snake.Core.Tests
         }
 
         [Fact]
-        public void When_Add_Reward_Object_In_PosXY_Where_Wall_Already_Exist_Should_Throw_RewardObjectCantBeInWallPosException()
+        public void
+            When_Add_Reward_Object_In_PosXY_Where_Wall_Already_Exist_Should_Throw_RewardObjectCantBeInWallPosException()
         {
             // Arrange
             var snake = GetSnakeInDefaultPosition();
@@ -99,10 +102,10 @@ namespace Snake.Core.Tests
                     new Level(new PosXY(5, 10),
                         new List<PosXY> { new PosXY(1, 1) }));
             var rewardObject = new RewardObject
-                    (
-                        Position: new PosXY(1, 1),
-                        Reward: 4
-                    );
+            (
+                Position: new PosXY(1, 1),
+                Reward: 4
+            );
 
             // Act
             var exception = Record.Exception(() => gameManager
@@ -114,7 +117,8 @@ namespace Snake.Core.Tests
         }
 
         [Fact]
-        public void When_Change_Direction_More_Than_Once_Should_Throw_TryChangeSnakeDirectionMoreThenOncePerMoveException()
+        public void
+            When_Change_Direction_More_Than_Once_Should_Throw_TryChangeSnakeDirectionMoreThenOncePerMoveException()
         {
             // Arrange
             var gameManager = GetGameManagerWithDeafaultParams();
@@ -138,16 +142,15 @@ namespace Snake.Core.Tests
             var gameManager = GetGameManagerWithDeafaultParams();
 
             // Act
-            var exception = Record.Exception(() =>
-            {
-                gameManager.ChangeDirection(Constants.Direction.RIGHT);
-            });
+            var exception = Record.Exception(() => { gameManager.ChangeDirection(Constants.Direction.RIGHT); });
 
             // Assert
             exception.ShouldNotBeNull();
             exception.ShouldBeOfType<WrongDirectionException>();
         }
+
         #region ARRANGE
+
         private readonly ISnakeGameObjectFactory snakeGameObjectFactory
             = new SnakeGameObjectFactory();
 
@@ -161,7 +164,8 @@ namespace Snake.Core.Tests
             => snakeGameManagerFactory
                 .CreateSnakeGameManager(GetSnakeInDefaultPosition(),
                     new Level(new PosXY(10, 10),
-                            Enumerable.Empty<PosXY>()));
+                        Enumerable.Empty<PosXY>()));
+
         #endregion
     }
 }

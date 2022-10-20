@@ -8,7 +8,7 @@ namespace Snake.Core.Tests
     public class SnakeGameObjectTests
     {
         [Fact]
-        public void SnakeLifeState_Change_Correctly()
+        public void When_Snake_Is_Dead_SnakeIsDead_Method_Should_Be_True_And_SnakeIsAlive_Should_Be_False()
         {
             // Arrange
             var startPos = new PosXY(0, 0);
@@ -25,7 +25,7 @@ namespace Snake.Core.Tests
         [Theory]
         [InlineData(0, 0)]
         [InlineData(1, 2)]
-        public void Snake_Should_Collide_With_Object_At_Pos(int x, int y)
+        public void When_Snake_And_Object_At_The_Same_Pos_CheckCollisionAtPosition_Should_Return_True(int x, int y)
         {
             // Arrange
             var startPos = new PosXY(x, y);
@@ -39,7 +39,7 @@ namespace Snake.Core.Tests
         }
 
         [Fact]
-        public void When_Snake_Is_Dead_Move_Will_Throw_TryMoveWhenDeadException()
+        public void When_Snake_Is_Dead_Move_Should_Throw_TryMoveWhenDeadException()
         {
             // Arrange
             var startPos = new PosXY(0, 0);
@@ -53,12 +53,15 @@ namespace Snake.Core.Tests
             exception.ShouldNotBeNull();
             exception.ShouldBeOfType<TryMoveWhenDeadException>();
         }
+
         [Theory]
         [InlineData(1, 0)]
         [InlineData(2, 1)]
         [InlineData(3, 2)]
         [InlineData(7, 6)]
-        public void Test_Body_Count_When_Increasing_Snake_With_Moving(int increaseCount, int bodySize)
+        public void
+            When_Increasing_By_IncreasingCount_SnakeGameObject_And_Moving_It_SnakeBody_Size_Should_Be_As_BodySize(
+                int increaseCount, int bodySize)
         {
             // Arrange
             var startPos = new PosXY(0, 0);
@@ -68,14 +71,15 @@ namespace Snake.Core.Tests
             for (int i = 0; i < increaseCount; i++)
             {
                 snake.IncreaseSnake();
-                snake.Move(startPos with { X = i + 1});
+                snake.Move(startPos with { X = i + 1 });
             }
 
             // Assert
             snake.GetBody().Count().ShouldBe(bodySize);
         }
+
         [Fact]
-        public void When_Snake_Was_Not_Increased_Tail_Is_Null()
+        public void When_Snake_Was_Not_Increased_Tail_Should_Be_Null()
         {
             // Arrange
             var startPos = new PosXY(0, 0);
@@ -86,9 +90,12 @@ namespace Snake.Core.Tests
             // Assert
             snake.GetTail().ShouldBeNull();
         }
+
         #region ARRANGE
+
         private readonly ISnakeGameObjectFactory snakeGameObjectFactory
             = new SnakeGameObjectFactory();
+
         #endregion
     }
 }

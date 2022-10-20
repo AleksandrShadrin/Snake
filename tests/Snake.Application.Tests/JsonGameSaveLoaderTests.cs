@@ -27,7 +27,7 @@ namespace Snake.Application.Tests
         }
 
         [Fact]
-        public void Load_Method_Should_Load_Saved_Data()
+        public void When_Saving_Game_LoadGame_Method_Should_Load_Same_State()
         {
             // Arrange
             DeleteFilesFromSavesFolder();
@@ -85,9 +85,12 @@ namespace Snake.Application.Tests
         }
 
         #region ARRANGE
+
         private readonly string SaveDataFolder = Path.Combine(".", "Saves");
+
         private ISnakeGameService GameService()
             => new SnakeGameService(new SnakeGameManagerFactory(), new SnakeGameObjectFactory());
+
         private void DeleteFilesFromSavesFolder()
         {
             var files = Directory.GetFiles(SaveDataFolder);
@@ -107,6 +110,7 @@ namespace Snake.Application.Tests
                 Directory.CreateDirectory(SaveDataFolder);
             }
         }
+
         #endregion
     }
 }
