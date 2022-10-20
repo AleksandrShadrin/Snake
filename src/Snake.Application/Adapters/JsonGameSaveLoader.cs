@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Snake.Application.Adapters
 {
-    internal class JsonGameSaveLoader : IGameSaveLoader
+    public class JsonGameSaveLoader : IGameSaveLoader
     {
         private readonly ISnakeGameService _snakeGameService;
         private Regex _format = new(@"^[\d]{3}-[\d]{3}-[\d]{3}\.json$");

@@ -7,7 +7,7 @@ using Snake.Core.ValueObjects;
 
 namespace Snake.Application.Adapters
 {
-    internal class SnakeGameService : ISnakeGameService
+    public class SnakeGameService : ISnakeGameService
     {
         private readonly ISnakeGameManagerFactory _gameManagerFactory;
         private readonly ISnakeGameObjectFactory _gameObjectFactory;
