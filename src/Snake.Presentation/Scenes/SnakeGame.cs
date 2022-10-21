@@ -1,4 +1,4 @@
-﻿using Snake.Application.Adapters;
+using Snake.Application.Adapters;
 using Snake.Core.Constants;
 using Snake.Core.Exceptions;
 using Snake.Core.ValueObjects;
@@ -85,14 +85,14 @@ namespace Snake.Presentation.Scenes
 
             if (key == ConsoleKey.Escape)
             {
-                OnSwitchScene?.Invoke(typeof(SnakeMenu));
+                SwitchScene?.Invoke(typeof(SnakeMenu));
             }
 
             if (key == ConsoleKey.Enter && _snakeGameService.GameIsOver())
             {
                 _snakeGameService.CreateGame(_levelGenerator.GenerateLevel().Item1,
                     _levelGenerator.GenerateLevel().Item2);
-                OnSwitchScene?.Invoke(typeof(SnakeGame));
+                SwitchScene?.Invoke(typeof(SnakeGame));
             }
         }
 

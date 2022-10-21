@@ -1,4 +1,4 @@
-﻿using Snake.Application.Adapters;
+using Snake.Application.Adapters;
 using Snake.Presentation.Base;
 
 namespace Snake.Presentation.Scenes
@@ -21,7 +21,7 @@ namespace Snake.Presentation.Scenes
             if (_dataIsSaved)
             {
                 _dataIsSaved = false;
-                OnSwitchScene?.Invoke(typeof(SnakeMenu));
+                SwitchScene?.Invoke(typeof(SnakeMenu));
                 return;
             }
 
@@ -36,7 +36,7 @@ namespace Snake.Presentation.Scenes
             }
             else if (_inputHandler.ConsoleKey == ConsoleKey.N && _dataIsSaved is false)
             {
-                OnSwitchScene?.Invoke(typeof(SnakeMenu));
+                SwitchScene?.Invoke(typeof(SnakeMenu));
             }
         }
 

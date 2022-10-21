@@ -1,4 +1,4 @@
-﻿using Snake.Application.Adapters;
+using Snake.Application.Adapters;
 using Snake.Presentation.Base;
 using Snake.Presentation.Constants;
 using Snake.Presentation.LevelGenerator;
@@ -60,19 +60,19 @@ namespace Snake.Presentation.Scenes
                     case MenuCases.START_GAME:
                         _gameService.CreateGame(_levelGenerator.GenerateLevel().Item1,
                             _levelGenerator.GenerateLevel().Item2);
-                        OnSwitchScene?.Invoke(typeof(SnakeGame));
+                        SwitchScene?.Invoke(typeof(SnakeGame));
                         break;
                     case MenuCases.CONTINUE_GAME:
-                        OnSwitchScene?.Invoke(typeof(SnakeGame));
+                        SwitchScene?.Invoke(typeof(SnakeGame));
                         break;
                     case MenuCases.LOAD_GAME:
-                        OnSwitchScene?.Invoke(typeof(LoadScene));
+                        SwitchScene?.Invoke(typeof(LoadScene));
                         break;
                     case MenuCases.SAVE_GAME:
-                        OnSwitchScene?.Invoke(typeof(SaveScene));
+                        SwitchScene?.Invoke(typeof(SaveScene));
                         break;
                     case MenuCases.EXIT:
-                        OnSwitchScene?.Invoke(typeof(Exit));
+                        SwitchScene?.Invoke(typeof(Exit));
                         break;
                     default:
                         break;
@@ -81,7 +81,7 @@ namespace Snake.Presentation.Scenes
 
             if (key == ConsoleKey.Escape)
             {
-                OnSwitchScene?.Invoke(typeof(SnakeGame));
+                SwitchScene?.Invoke(typeof(SnakeGame));
             }
         }
 

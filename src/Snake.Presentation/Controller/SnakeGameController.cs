@@ -1,4 +1,4 @@
-﻿using Snake.Application.Adapters;
+using Snake.Application.Adapters;
 using Snake.Presentation.Base;
 using Snake.Presentation.LevelGenerator;
 
@@ -30,7 +30,7 @@ namespace Snake.Presentation.Controller
 
         public void AddSceneToController(BaseScene scene)
         {
-            scene.OnSwitchScene += SwitchScene;
+            scene.SwitchScene += SwitchScene;
             _inputHandler.OnChange += scene.OnKeyPressed;
             _scenes.Add(scene.GetType(), scene);
         }

@@ -30,19 +30,19 @@ namespace Snake.Presentation.Scenes
         {
             if (_inputHandler.ConsoleKey == ConsoleKey.Escape)
             {
-                OnSwitchScene?.Invoke(typeof(SnakeMenu));
+                SwitchScene?.Invoke(typeof(SnakeMenu));
             }
 
             if (_inputHandler.ConsoleKey == ConsoleKey.Enter)
             {
                 if (_fileNames.Count() == 0)
                 {
-                    OnSwitchScene?.Invoke(typeof(SnakeMenu));
+                    SwitchScene?.Invoke(typeof(SnakeMenu));
                     return;
                 }
 
                 _saveLoader.LoadGame(_fileNames[_currentPage * _filesPerPageCount + _selectedElementInList]);
-                OnSwitchScene?.Invoke(typeof(SnakeGame));
+                SwitchScene?.Invoke(typeof(SnakeGame));
             }
 
             if (_inputHandler.ConsoleKey == ConsoleKey.LeftArrow)
